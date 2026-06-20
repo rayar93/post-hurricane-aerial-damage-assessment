@@ -1,1 +1,28 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
 
+# Data and outputs
+data/raw/
+data/processed/
+outputs/
+
+# Video files
+*.mp4
+*.mov
+*.avi
+*.mkv
+
+# Image files
+*.jpg
+*.jpeg
+*.png
+*.tif
+*.tiff
+*.bmp
+*.webp
+
+# OS files
+.DS_Store
