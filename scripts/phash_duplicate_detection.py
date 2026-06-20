@@ -47,7 +47,7 @@ def compute_phash(image_path: Path, hash_size: int = 8) -> str:
 
 
 def hamming_distance(hash_1: str, hash_2: str) -> int:
-    return (int(hash_1, 16) ^ int(hash_2, 16)).bit_count()
+    return bin(int(hash_1, 16) ^ int(hash_2, 16)).count("1")
 
 
 def find_images(input_dir: Path):
