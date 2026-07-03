@@ -2,3 +2,4 @@ Pillow
 numpy
 opencv-python
 huggingface_hub
+rasterio
