@@ -224,3 +224,60 @@ Its corresponding annotation file contained:
 | File size            | 60.83 MB |
 
 This is a much better candidate for building-crop extraction than the first small Westpark example, which had only 4 annotation records and only 1 useful label.
+
+## Lancaster-Canyon-Gate CREWED crop extraction result
+
+After ranking hurricane-related GeoTIFF/annotation pairs, the best CREWED candidate under 150 MB was selected:
+
+```text
+train/imagery/CREWED/090403-Lancaster-Canyon-Gate.geo.tif_20170830_RGB.geo.tif
+
+This file is related to Hurricane Harvey and was selected because it had a strong combination of manageable file size and useful building labels.
+
+The corresponding annotation file contained:
+
+Metric	Value
+Total annotation records	647
+Useful records	629
+Useful-label rate	0.972
+Excluded records	18
+Major damage records	629
+Un-classified records	18
+File size	60.83 MB
+
+The crop extraction pipeline produced:
+
+| Metric                |  Value |
+| --------------------- | -----: |
+| Total crops extracted |    647 |
+| Major damage crops    |    629 |
+| Un-classified crops   |     18 |
+| Minimum crop width    |     68 |
+| Median crop width     |    117 |
+| Maximum crop width    |    391 |
+| Minimum crop height   |     57 |
+| Median crop height    |    105 |
+| Maximum crop height   |    186 |
+| Minimum quality score | 0.0676 |
+| Median quality score  | 0.1908 |
+| Maximum quality score | 0.6821 |
+
+This result is much better than the initial small GeoTIFF demonstrations. The extracted crops show recognizable buildings and roof structures, which makes this file a more useful candidate for testing the building-level crop extraction and pHash pipeline.
+
+Updated interpretation
+
+The first small GeoTIFF demos were useful to prove the mechanics of the pipeline, but they were not visually ideal for training because they contained many black no-data/background regions and mostly un-classified or obscured labels.
+
+The Lancaster-Canyon-Gate CREWED example demonstrates that, after ranking and selecting better candidates, CRASAR GeoTIFFs can produce meaningful building-level image crops.
+
+This supports the following workflow:
+
+1. Filter CRASAR to hurricane-related files.
+2. Pair GeoTIFF imagery files with building_damage_assessment JSON annotations.
+3. Rank candidates by file size, useful label count, useful-label rate, and source.
+4. Download only promising candidates.
+5. Extract building-level crops.
+6. Compute pHash and crop-quality metrics.
+7. Filter or rank crops before model training.
+
+The key lesson is that GeoTIFF-to-crop conversion is feasible, but candidate selection and crop-quality filtering are necessary before building a training dataset.
