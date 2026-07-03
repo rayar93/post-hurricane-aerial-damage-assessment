@@ -281,3 +281,84 @@ This supports the following workflow:
 7. Filter or rank crops before model training.
 
 The key lesson is that GeoTIFF-to-crop conversion is feasible, but candidate selection and crop-quality filtering are necessary before building a training dataset.
+
+## Crop-quality filtering result
+
+The Lancaster-Canyon-Gate CREWED example produced useful building crops, but some crops still contained black no-data/background regions or had low visual quality.
+
+A crop-filtering script was added:
+
+```text
+scripts/filter_extracted_crops.py
+
+The script filters extracted crops using:
+
+label usefulness
+quality score
+crop width
+crop height
+black/no-data pixel fraction
+
+For the Lancaster-Canyon-Gate CREWED example, the filtering result was:
+
+Metric	Value
+Input crops	647
+Filtered crops kept	442
+Kept rate	0.6832
+Major damage crops before filtering	629
+Un-classified crops before filtering	18
+Major damage crops after filtering	442
+Un-classified crops after filtering	0
+
+The filter removed crops for the following reasons:
+
+Reason	Count
+Low quality score	176
+Excluded label	18
+Too much black background	29
+
+This confirms that crop-level quality filtering is necessary when converting GeoTIFF imagery into ordinary image crops. GeoTIFF rasters may contain black no-data/background regions that do not usually appear in ordinary video frames.
+
+Current technical status
+
+The current pipeline now supports:
+
+CRASAR hurricane file filtering
+GeoTIFF/annotation pairing
+candidate ranking
+single-file GeoTIFF download
+GeoTIFF metadata inspection
+GeoTIFF RGB preview export
+building crop extraction
+pHash and crop-quality metric computation
+crop-quality filtering
+
+The Lancaster-Canyon-Gate result shows that the pipeline can produce visually meaningful building-level crops when a good candidate file is selected.
+
+Remaining limitation
+
+The Lancaster-Canyon-Gate CREWED file is useful for proving the pipeline, but it is not sufficient as a balanced training dataset because nearly all useful crops are labelled major damage.
+
+The next dataset-construction step should select hurricane-related files with stronger class diversity across:
+
+no damage
+minor damage
+major damage
+destroyed
+
+A good next candidate is a Hurricane Ian SATELLITE file with a more balanced label distribution, such as:
+
+train/imagery/SATELLITE/1002-Ft-Myers-Beach-TFD.geo.tif_10300100DB06A700-visual.tif.geo.tif
+
+Its annotation file contains:
+
+Label	Count
+no damage	330
+minor damage	246
+major damage	40
+destroyed	147
+un-classified	7
+obscured	0
+
+This type of file is more useful for testing the full classification setup because it contains multiple damage classes.
+
