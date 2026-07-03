@@ -136,4 +136,31 @@ and outputs:
 
 building crop PNG files + metadata CSV
 
-This demonstrates how georeferenced GeoTIFF data can be converted into ordinary image crops for computer vision models while preserving the original building-level metadata.
+For the inspected Hurricane Harvey CREWED RGB GeoTIFF, the script extracted 4 building crops. The resulting metadata CSV preserved:
+
+crop_path
+building_id
+view_id
+label
+source
+filename
+original_geotiff_path
+pixel bounds
+CRS
+resolution
+pHash
+quality metrics
+
+This demonstrates that georeferenced GeoTIFF data can be converted into ordinary image crops for computer vision models while preserving the original building-level and geospatial metadata.
+
+Important interpretation
+
+A GeoTIFF can be converted into normal image data, but it is not originally the same as a video frame.
+
+A video frame is usually just an RGB image in a temporal sequence.
+
+A GeoTIFF is a georeferenced raster. It contains image bands plus spatial metadata such as CRS, transform, bounds, and resolution. This allows building annotations to be aligned with the image and enables building-level crop extraction.
+
+Therefore, if the project only wants non-georeferenced image/frame-like data, the correct approach is:
+
+GeoTIFF + annotation JSON -> building crop PNG/JPG files + metadata CSV
