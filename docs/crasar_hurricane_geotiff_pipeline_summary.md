@@ -170,3 +170,30 @@ GeoTIFF raster + annotation polygons
 → metadata CSV preserving building IDs, labels, crop bounds, and geospatial information
 
 This allows the project to use standard image-based machine learning models while still preserving the structure and metadata advantages of georeferenced imagery.
+
+## Visual quality limitation from the first crop demos
+
+The initial CREWED and SATELLITE crop extraction tests demonstrate that the technical pipeline works, but they also show that not all GeoTIFF-derived crops are visually useful.
+
+Some extracted crops contain large black regions. These likely correspond to no-data/background areas or regions outside the useful raster footprint. This is different from ordinary video frames, where the whole frame is usually a valid RGB image.
+
+The SATELLITE example was especially limited because it was very small, 420 x 463 pixels, and many extracted crops were labelled `obscured` or `un-classified`. These labels are not ideal for a main supervised damage-classification task.
+
+Therefore, the next step should not be to process all hurricane GeoTIFFs blindly. The next step should be to rank hurricane-related GeoTIFF/annotation pairs by:
+
+1. manageable file size,
+2. number of useful building annotations,
+3. label distribution,
+4. source type,
+5. expected crop quality,
+6. proportion of labels in the main damage classes.
+
+For the main classification task, useful labels are likely:
+
+```text
+no damage
+minor damage
+major damage
+destroyed
+
+The labels un-classified and obscured should probably be excluded from the first clean supervised setup or handled separately.
