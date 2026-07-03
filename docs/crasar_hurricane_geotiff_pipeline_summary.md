@@ -197,3 +197,30 @@ major damage
 destroyed
 
 The labels un-classified and obscured should probably be excluded from the first clean supervised setup or handled separately.
+
+## Candidate ranking result
+
+The first small GeoTIFF demos were useful for proving the pipeline but were not visually ideal for training. The SATELLITE demo in particular showed low-resolution crops with substantial black no-data/background regions and mostly `obscured` or `un-classified` labels.
+
+To avoid processing files blindly, a ranking script was added:
+
+```text
+scripts/rank_crasar_hurricane_crop_candidates.py
+
+This script ranks hurricane-related GeoTIFF/annotation pairs using file size, number of useful labels, useful-label rate, source, and label distribution.
+
+For CREWED imagery under 150 MB, the best candidate was:
+
+train/imagery/CREWED/090403-Lancaster-Canyon-Gate.geo.tif_20170830_RGB.geo.tif
+
+Its corresponding annotation file contained:
+| Metric               |    Value |
+| -------------------- | -------: |
+| Annotation records   |      647 |
+| Useful records       |      629 |
+| Useful rate          |    0.972 |
+| Excluded records     |       18 |
+| Major damage records |      629 |
+| File size            | 60.83 MB |
+
+This is a much better candidate for building-crop extraction than the first small Westpark example, which had only 4 annotation records and only 1 useful label.
