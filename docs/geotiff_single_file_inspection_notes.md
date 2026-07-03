@@ -87,3 +87,53 @@ source
 filename
 original_geotiff_path
 pixel_bounds
+
+## Actual inspection result
+
+The inspected GeoTIFF had the following properties:
+
+| Field | Value |
+|---|---:|
+| Driver | GTiff |
+| Width | 1,125 |
+| Height | 1,239 |
+| Bands | 4 |
+| CRS | EPSG:4326 |
+| Data type | uint8 |
+| Nodata | null |
+
+The file includes geographic bounds in longitude/latitude coordinates:
+
+```text
+left: -95.73131385948028
+bottom: 29.703945043310878
+right: -95.72828209817133
+top: 29.707284023099135
+
+The corresponding building damage assessment JSON file contained 4 annotation records. Each annotation record included:
+
+building_id
+view_id
+label
+pixels
+boundary
+source
+filename
+
+The pixels field contained polygon points in image pixel coordinates, which can be used to extract building-level crops from the GeoTIFF.
+
+Crop extraction demonstration
+
+A building-crop extraction script was added:
+
+scripts/extract_crasar_building_crops.py
+
+This script takes:
+
+GeoTIFF image + building damage assessment JSON
+
+and outputs:
+
+building crop PNG files + metadata CSV
+
+This demonstrates how georeferenced GeoTIFF data can be converted into ordinary image crops for computer vision models while preserving the original building-level metadata.
