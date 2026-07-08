@@ -3,3 +3,4 @@ numpy
 opencv-python
 huggingface_hub
 rasterio
+torch
