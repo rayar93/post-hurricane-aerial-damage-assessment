@@ -31,3 +31,10 @@ outputs/
 # Generated datasets
 data/segmentation_dataset/
 data/interim/
+
+# Training outputs
+outputs/training_runs/
+models/
+*.pt
+*.pth
+*.ckpt
