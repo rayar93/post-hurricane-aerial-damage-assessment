@@ -88,3 +88,45 @@ The next experiments should be:
 2. Try balanced sampling or class-balanced batches.
 3. Add more class-diverse GeoTIFF files to increase major damage examples.
 4. Compare models using foreground mean IoU and per-class IoU, not only pixel accuracy.
+
+## Four-run comparison after weighted CE 15 epochs
+
+The current comparison is:
+
+| Run | Pixel accuracy | Mean IoU all | Foreground mean IoU | no damage IoU | minor damage IoU | major damage IoU | destroyed IoU |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| Cross entropy, 1 epoch | 0.8326 | 0.2539 | 0.0895 | 0.3561 | 0.0019 | 0.0000 | 0.0000 |
+| Weighted cross entropy, 5 epochs | 0.8417 | 0.3523 | 0.2133 | 0.3225 | 0.1105 | 0.0000 | 0.4200 |
+| Focal loss, 5 epochs | 0.4734 | 0.1988 | 0.1350 | 0.2949 | 0.1424 | 0.0009 | 0.1018 |
+| Weighted cross entropy, 15 epochs | 0.8580 | 0.4171 | 0.2922 | 0.3059 | 0.2875 | 0.0000 | 0.5752 |
+
+## Interpretation
+
+Weighted cross entropy with 15 epochs is the strongest run so far.
+
+It improved foreground mean IoU substantially:
+
+```text
+Cross entropy 1 epoch: 0.0895
+Weighted CE 5 epochs: 0.2133
+Weighted CE 15 epochs: 0.2922
+
+It also improved minor damage and destroyed:
+
+minor damage IoU: 0.0019 → 0.2875
+destroyed IoU: 0.0000 → 0.5752
+
+The remaining failure is major damage, which remains at 0.0000 IoU.
+
+This is likely because the class is very scarce:
+
+train original major damage samples: 28
+validation major damage samples: 6
+test major damage samples: 6
+Next experiment
+
+The next experiment is to train with a class-balanced image sampler.
+
+The goal is to make the model see rare image-level classes, especially major damage, more often during training.
+
+This will test whether the major damage failure is caused mainly by sampling imbalance.
