@@ -27,3 +27,7 @@ outputs/
 
 # OS files
 .DS_Store
+
+# Generated datasets
+data/segmentation_dataset/
+data/interim/
