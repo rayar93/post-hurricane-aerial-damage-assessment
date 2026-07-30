@@ -4,6 +4,10 @@ An open-source research project for building-level post-hurricane damage assessm
 
 The project is designed around three requirements: evidence-based preprocessing, leakage-safe evaluation, and generalization to disaster events that were not used for model development.
 
+## Research documentation
+
+- [UAV preprocessing experiment registry](UAV_PREPROCESSING_EXPERIMENTS.md): candidate preprocessing steps, literature rationale, experiment results, visual evidence, and final keep/reject decisions.
+
 ## Completion target — August 30, 2026
 
 By **August 30, 2026**, the repository should contain a complete, reproducible pipeline covering:
@@ -116,3 +120,6 @@ The August milestone is complete only when all of the following are true:
 Large videos, raw datasets, extracted frames, generated datasets, model checkpoints, and other heavy artifacts should not be committed to GitHub.
 
 Only source code, configuration files, documentation, manifests without restricted data, and small result reports should be version-controlled.
+
+
+
