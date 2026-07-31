@@ -1,0 +1,80 @@
+{
+  "experiment_id": "UAV-P01",
+  "name": "Alpha validity filtering and invalid-region fill",
+  "status": "COMPLETE",
+  "decision": "KEEP",
+  "dataset": {
+    "events": [
+      "Hurricane Ian",
+      "Hurricane Ida"
+    ],
+    "source_annotations": 699,
+    "eligible_buildings": 690,
+    "class_counts": {
+      "no damage": 256,
+      "minor damage": 242,
+      "major damage": 126,
+      "destroyed": 66
+    }
+  },
+  "split": {
+    "train": 414,
+    "validation": 138,
+    "test": 138
+  },
+  "nested_train_subsets": {
+    "10_percent": 69,
+    "20_percent": 138,
+    "30_percent": 207
+  },
+  "train_findings": {
+    "valid_dark_gt_1pct_count": 144,
+    "valid_dark_gt_1pct_fraction": 0.34782608695652173,
+    "valid_dark_gt_10pct_count": 3,
+    "valid_dark_gt_10pct_fraction": 0.007246376811594203,
+    "polygon_any_nodata_count": 15,
+    "polygon_any_nodata_fraction": 0.036231884057971016,
+    "polygon_gt_40pct_count": 5,
+    "polygon_gt_40pct_fraction": 0.012077294685990338,
+    "polygon_gt_50pct_count": 0,
+    "polygon_gt_50pct_fraction": 0.0,
+    "crop_nodata_mean": 0.013592,
+    "crop_nodata_median": 0.0,
+    "crop_nodata_max": 0.482577,
+    "polygon_nodata_mean": 0.012548,
+    "polygon_nodata_median": 0.0,
+    "polygon_nodata_p95": 0.0,
+    "polygon_nodata_max": 0.472647
+  },
+  "materialization_10pct": {
+    "train_samples": 69,
+    "validation_samples": 138,
+    "test_samples": 0,
+    "total_samples": 207,
+    "samples_with_ignore_255": 6,
+    "maximum_ignore_fraction": 0.437805,
+    "train_validation_overlap": 0,
+    "mask_values": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      255
+    ]
+  },
+  "final_policy": {
+    "validity_source": "GeoTIFF alpha",
+    "valid_condition": "alpha > 0",
+    "invalid_condition": "alpha == 0",
+    "rgb_fill": [
+      0,
+      0,
+      0
+    ],
+    "target_ignore_index": 255,
+    "current_samples_rejected": 0,
+    "future_rejection_condition": "building_polygon_invalid_fraction > 0.50",
+    "dark_pixel_heuristic": "REJECT"
+  }
+}

@@ -1,0 +1,13 @@
+metric,count,denominator,percentage,value,unit
+eligible_buildings,690,,,690,buildings
+valid_dark_gt_1pct,144,414,34.78260869565217,144,buildings
+valid_dark_gt_10pct,3,414,0.7246376811594203,3,buildings
+polygon_any_alpha_nodata,15,414,3.6231884057971016,15,buildings
+polygon_alpha_nodata_gt_40pct,5,414,1.2077294685990339,5,buildings
+polygon_alpha_nodata_gt_50pct,0,414,0.0,0,buildings
+crop_nodata_mean,,,1.3592,0.013592,fraction
+crop_nodata_max,,,48.2577,0.482577,fraction
+polygon_nodata_mean,,,1.2548,0.012548,fraction
+polygon_nodata_max,,,47.2647,0.472647,fraction
+samples_with_ignore_255,6,207,2.898550724637681,6,samples
+maximum_ignore_fraction,,,43.7805,0.437805,fraction

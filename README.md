@@ -7,6 +7,7 @@ The project is designed around three requirements: evidence-based preprocessing,
 ## Research documentation
 
 - [UAV preprocessing experiment registry](UAV_PREPROCESSING_EXPERIMENTS.md): candidate preprocessing steps, literature rationale, experiment results, visual evidence, and final keep/reject decisions.
+- [UAV missing-data validation](docs/preprocessing/uav_missing_data_validation.md): alpha validity findings and final UAV-P01 decision.
 
 ## Completion target — August 30, 2026
 

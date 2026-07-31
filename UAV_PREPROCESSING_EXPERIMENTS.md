@@ -73,7 +73,7 @@ These are evaluation requirements, not optional ablations:
 | ID | Candidate | Type | Priority | Status | Decision | Main source |
 |---|---|---|---:|---|---|---|
 | UAV-P00 | Dark-pixel invalid-image heuristic | Deterministic | Complete | Complete | `REJECT` | Internal UAV audit |
-| UAV-P01 | Alpha validity filtering and invalid-region fill | Deterministic | 1 | Partial | Mechanism `KEEP`; threshold `PENDING` | Internal UAV audit |
+| UAV-P01 | Alpha validity filtering and invalid-region fill | Deterministic | 1 | Complete | `KEEP` | Internal UAV audit |
 | UAV-P02 | Global auto-contrast | Deterministic | Complete | Complete | `REJECT` | Internal ablation |
 | UAV-P03 | Median 3×3 denoising | Deterministic | Complete | Complete | `REJECT` | Internal 10/20/30% ablation |
 | UAV-P04 | Building ROI and context margin | Deterministic | 1 | Planned | `PENDING` | Hasan et al. (2026) |
@@ -103,31 +103,61 @@ These are evaluation requirements, not optional ablations:
 
 ## UAV-P01 — Alpha validity filtering and invalid-region fill
 
-**Hypothesis:** alpha distinguishes nonexistent pixels from valid dark pixels.
+**Status:** `COMPLETE`
 
-**Current finding:** alpha is the correct validity signal. Exclusion must remain conservative because partially incomplete crops may still contain useful building evidence.
+**Decision:** `KEEP`
 
-Variants to test:
+**Hypothesis:** GeoTIFF alpha distinguishes unavailable imagery from valid
+dark RGB pixels.
 
-- keep all crops and fill alpha-zero pixels with black;
-- reject above 50%, 75%, or 90% invalid coverage;
-- reject only when the building ROI itself is predominantly invalid;
-- compare black, training-set mean, and nearest-valid/reflected fill.
+**Development corpus:** 690 eligible UAV buildings from Hurricane Ian and
+Hurricane Ida. The frozen split contains 414 train, 138 validation, and
+138 test buildings.
 
-**Image:** `docs/assets/uav-preprocessing/UAV-P01_visual-comparison.png`.
+### TRAIN findings
 
-**Results:**
+| Check | Result |
+|---|---:|
+| More than 1% valid dark pixels | 144 / 414 (34.78%) |
+| More than 10% valid dark pixels | 3 / 414 (0.72%) |
+| Any polygon alpha no-data | 15 / 414 (3.62%) |
+| More than 40% polygon alpha no-data | 5 / 414 (1.21%) |
+| More than 50% polygon alpha no-data | 0 / 414 (0.00%) |
+| Maximum polygon alpha no-data | 47.2647% |
 
-| Variant | 10% macro F1 | 20% macro F1 | 30% macro F1 | Full-data macro F1 | Notes |
-|---|---:|---:|---:|---:|---|
-| Keep all / black fill | — | — | — | — | |
-| Reject >50% invalid | — | — | — | — | |
-| Reject >75% invalid | — | — | — | — | |
-| Reject >90% invalid | — | — | — | — | |
-| ROI-aware rejection | — | — | — | — | |
-| Alternative fill | — | — | — | — | |
+The complete-crop no-data mean was 1.3592%. The building-polygon no-data
+mean was 1.2548%. Polygon median and 95th percentile were both zero.
 
-**Decision:** alpha mechanism `KEEP`; threshold and fill `PENDING`.
+The 50%, 75%, and 90% rejection policies remove zero TRAIN buildings and
+would produce identical training datasets.
+
+### Materialization validation
+
+The nested 10% materialization contained 69 training samples, 138 validation
+samples, zero test samples, zero train/validation overlap, six samples with
+`IGNORE=255`, and a maximum resized ignore fraction of 43.7805%.
+
+### Final policy
+
+- use `alpha > 0` as the valid-pixel mask;
+- reject the RGB dark-pixel heuristic;
+- black-fill RGB pixels where `alpha == 0`;
+- assign `IGNORE=255` to invalid target-mask pixels;
+- retain every building in the current development corpus;
+- reject future crops only when more than 50% of the building polygon is
+  alpha-invalid.
+
+Black is a deterministic placeholder, not a missing-data detector.
+
+**Evidence:**
+
+- `docs/preprocessing/uav_missing_data_validation.md`
+- `docs/assets/uav-preprocessing/UAV-P01_metric-comparison.png`
+- `reports/preprocessing/uav_missing_data/key_findings.csv`
+- `reports/preprocessing/uav_missing_data/summary.json`
+
+**Final result:** alpha validity `KEEP`; dark-pixel heuristic `REJECT`;
+current samples rejected: `0`.
 
 ## UAV-P02 — Global auto-contrast
 
