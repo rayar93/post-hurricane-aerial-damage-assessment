@@ -4,3 +4,4 @@ opencv-python==4.9.0.80
 huggingface_hub
 rasterio
 torch
+matplotlib
