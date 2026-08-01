@@ -3,7 +3,7 @@
 **Scope:** high-resolution UAV imagery for building-level post-hurricane damage classification  
 **Owner:** Miguel Ángel  
 **Created:** 2026-07-30  
-**Last updated:** 2026-07-30
+**Last updated:** 2026-07-31
 
 This document is the single source of truth for UAV preprocessing decisions. Every candidate must be documented here before it enters the final pipeline. After each experiment, add the quantitative results, one representative image, and a final `KEEP` or `REJECT` decision.
 
@@ -76,7 +76,7 @@ These are evaluation requirements, not optional ablations:
 | UAV-P01 | Alpha validity filtering and invalid-region fill | Deterministic | 1 | Complete | `KEEP` | Internal UAV audit |
 | UAV-P02 | Global auto-contrast | Deterministic | Complete | Complete | `REJECT` | Internal ablation |
 | UAV-P03 | Median 3×3 denoising | Deterministic | Complete | Complete | `REJECT` | Internal 10/20/30% ablation |
-| UAV-P04 | Building ROI and context margin | Deterministic | 1 | Planned | `PENDING` | Hasan et al. (2026) |
+| UAV-P04 | Building ROI and context margin | Deterministic | 1 | Complete | `KEEP` 0% bounding box | Focused four-orthomosaic classifier tie-break |
 | UAV-P05 | Polygon alignment and buffer | Deterministic | 1 | Planned | `PENDING` | Manzini et al. (2024–2026) |
 | UAV-P06 | Input resolution, aspect ratio, padding, interpolation | Deterministic | 1 | Planned | `PENDING` | Corley et al. (2024) |
 | UAV-P07 | GSD normalization and scale robustness | Deterministic / augmentation | 1 | Planned | `PENDING` | Manzini et al. (2025–2026) |
@@ -183,29 +183,76 @@ current samples rejected: `0`.
 
 ## UAV-P04 — Building ROI and context margin
 
-**Source and rationale:** Hasan et al. (2026) use building-centric damage representations and show that surrounding spatial context can add useful information. Moderate context may preserve debris, fallen vegetation, flooding, displaced materials, and nearby damage; excessive context may distract the classifier.
+**Status:** `COMPLETE`
 
-Variants:
+**Decision:** `KEEP` the current 0% bounding box. `REJECT` the masked-building
+control and +12.5% alternative.
 
-- current rectangular bounding box;
-- exact building mask only;
-- building plus 10% margin;
-- building plus 25% margin;
-- building plus 50% margin.
+**Source and rationale:** Hasan et al. (2026) use building-centric damage
+representations and show that surrounding spatial context can add useful
+information. Moderate context may preserve debris, fallen vegetation,
+flooding, displaced materials, and nearby damage; excessive context may
+distract the classifier and reduce effective building resolution.
 
-Preserve aspect ratio and pad to square instead of stretching.
+The initial two-orthomosaic search compared the masked-building control and
+margins 0%, +5%, +10%, +15%, +20%, +25%, +35%, and +50%, then refined around
+the TRAIN-30% leader with +12.5% and +17.5%. Its 294 classifier runs found no
+stable winner and retained 0% provisionally as `NEEDS FULL DATA`.
 
-**Image:** `docs/assets/uav-preprocessing/UAV-P04_visual-comparison.png`.
+Margins were defined as a fraction of bounding-box width/height added to each
+corresponding side. Every variant preserved aspect ratio and used symmetric
+black padding to square instead of stretching. Alpha-invalid pixels followed
+UAV-P01. Global auto-contrast and median denoising were not used.
 
-| Variant | 10% macro F1 | 20% macro F1 | 30% macro F1 | Full-data macro F1 | Minority-class effect |
+The focused confirmation added two approved official-Train orthomosaics and
+retested only 0%, masked building, and +12.5%. Training used the same fixed 207
+historical TRAIN-30% buildings. Evaluation used a deterministic stratified 30%
+sample of 331 buildings from `1002-Ft-Myers-Beach-TFD.geo.tif` and
+`20210902-LA-DIV-01.geo.tif`. The fixed reference CNN and every training
+setting remained unchanged. Five paired seeds produced 15 real runs.
+
+Ian and Ida were evaluated separately and averaged with equal weight. The
+expanded manifest passed with zero overlap across sample IDs, building IDs,
+orthomosaics, flight/sequence surrogates, exact duplicates, and pHash≤6
+perceptual-duplicate groups. No internal-test row, annotation object, pixel,
+or final-event data was read.
+
+### Focused confirmation result
+
+| Variant | Equal-event macro F1 ± SD | Paired difference vs 0% (95% CI) | Major recall | Destroyed recall | Decision |
 |---|---:|---:|---:|---:|---|
-| Bounding box | — | — | — | — | — |
-| Exact mask | — | — | — | — | — |
-| +10% context | — | — | — | — | — |
-| +25% context | — | — | — | — | — |
-| +50% context | — | — | — | — | — |
+| 0% | 0.3811 ± 0.0363 | Reference | **0.5200** | **0.3734** | `KEEP` |
+| +12.5% | **0.3901 ± 0.0280** | +0.0090 [−0.0181, +0.0361] | 0.4838 | 0.3531 | `REJECT` |
+| Masked building | 0.3350 ± 0.0109 | −0.0461 [−0.0936, +0.0015] | 0.3657 | 0.1085 | `REJECT` |
 
-**Decision:** `PENDING`.
++12.5% was the raw mean leader but did not demonstrate improvement over 0%:
+the paired confidence interval included zero, it won only three of five seeds,
+and the event winner changed from 0% on Ian to +12.5% on Ida. Masking lost to
+0% in all five seeds and failed both severe-recall guardrails. Under the
+predeclared rule, a statistically indistinguishable added treatment cannot
+replace the smaller current crop.
+
+Geometry remained diagnostic only. On evaluation data, 0% used 47.90% of the
+model canvas for valid building pixels and 42.22% for visible context;
++12.5% changed those values to 31.41% and 58.67%. Those deterministic changes
+did not establish a classification benefit.
+
+**Evidence:**
+
+- `docs/preprocessing/uav_p04_professor_summary.md`
+- `docs/assets/uav-preprocessing/UAV-P04_tiebreak_classifier-results.png`
+- `docs/assets/uav-preprocessing/UAV-P04_tiebreak_visual-comparison.png`
+- `docs/assets/uav-preprocessing/UAV-P04_tiebreak_confusion-matrices.png`
+- `reports/preprocessing/uav_p04_tiebreak/summary.json`
+- `reports/preprocessing/uav_p04_tiebreak/margin_comparison.csv`
+- `reports/preprocessing/uav_p04_tiebreak/run_metrics.csv`
+- `reports/preprocessing/uav_p04_tiebreak/uav_p04_tiebreak_manifest.csv`
+
+**Final decision:** `KEEP` 0%. The result selects the simplest defensible
+configuration among the tested alternatives after confirmation on two
+additional orthomosaics. It is not evidence of a continuous mathematical
+optimum, and the untouched final event remains reserved for the eventual
+frozen end-to-end pipeline rather than preprocessing selection.
 
 ## UAV-P05 — Polygon alignment and buffer
 
@@ -491,6 +538,9 @@ Add one row for each executed run or grouped experiment and link the configurati
 
 | Date | Run ID | Step | Dataset subset | Model/config | Seeds | Result artifact | Outcome |
 |---|---|---|---|---|---|---|---|
+| 2026-07-31 | UAV-P04-EXP-01 | UAV-P04 | Historical nested TRAIN 10/20/30% | Descriptive ROI/context composition audit; no model | N/A | Superseded local exploratory archive | +10% provisional candidate; `NEEDS FULL DATA` |
+| 2026-07-31 | UAV-P04-EXP-02 | UAV-P04 | Bidirectional Ian↔Ida LOOO; nested TRAIN 10/20/30%; fixed held-out VAL | Frozen four-block CNN, 96×96, 25 epochs, final-epoch checkpoint | 17, 29, 43; finalists +59, +71 | Superseded local exploratory archive | 0% provisional TRAIN-30% reference after guardrail; no stable winner; `NEEDS FULL DATA` |
+| 2026-07-31 | UAV-P04-EXP-03 | UAV-P04 | Fixed historical TRAIN-30%; fixed stratified 30% evaluation from two additional official-Train orthomosaics | Same frozen four-block CNN, 96×96, 25 epochs, final-epoch checkpoint; 0% vs masked vs +12.5% | 17, 29, 43, 59, 71 | `reports/preprocessing/uav_p04_tiebreak/summary.json` | No added treatment proved better; 0% `KEEP` |
 | — | — | — | — | — | — | — | — |
 
 # Final frozen UAV pipeline
@@ -500,7 +550,7 @@ Complete only after all priority-1 candidates have been evaluated.
 | Stage | Selected configuration | Supporting experiment | Decision date |
 |---|---|---|---|
 | Invalid-pixel handling | Pending | UAV-P01 | — |
-| Building ROI/context | Pending | UAV-P04 | — |
+| Building ROI/context | 0% building bounding box; preserve aspect ratio and square-pad | UAV-P04 | 2026-07-31 |
 | Polygon/mask handling | Pending | UAV-P05 | — |
 | Input size/interpolation | Pending | UAV-P06 | — |
 | GSD/scale handling | Pending | UAV-P07 | — |

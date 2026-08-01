@@ -1,0 +1,152 @@
+{
+  "experiment_id": "UAV-P04-CLASSIFIER-TIEBREAK",
+  "status": "complete",
+  "decision": "KEEP",
+  "selection": {
+    "raw_best_mean_variant": "margin_12p5",
+    "raw_best_mean_equal_event_macro_f1": 0.39008604280666115,
+    "selected_variant": "margin_0",
+    "selected_variant_equal_event_macro_f1": 0.38108687814697817,
+    "decision": "KEEP",
+    "empirical_conclusion": "NO ADDED ROI TREATMENT PROVED BETTER; RETAIN THE 0% BASELINE",
+    "selection_rule": "An added treatment must have a positive paired 95% CI versus 0% for equal-event macro F1 and must not reduce equal-event major or destroyed recall by more than 0.05. Otherwise retain 0%.",
+    "event_winners": {
+      "Hurricane Ian": "margin_0",
+      "Hurricane Ida": "margin_12p5"
+    },
+    "seed_winners": {
+      "17": "margin_12p5",
+      "29": "margin_12p5",
+      "43": "margin_0",
+      "59": "margin_0",
+      "71": "margin_12p5"
+    },
+    "selected_variant_wins_both_events": false,
+    "selected_variant_wins_all_five_seeds": false,
+    "reliable_added_improvement": false,
+    "best_margin_scope": "best among 0%, masked building, and +12.5%; not a continuous optimum"
+  },
+  "counts": {
+    "train_total": 207,
+    "train_by_class": {
+      "no damage": 77,
+      "minor damage": 72,
+      "major damage": 38,
+      "destroyed": 20
+    },
+    "evaluation_eligible_before_alpha": 1103,
+    "evaluation_rejected_by_alpha": 0,
+    "evaluation_total": 331,
+    "evaluation_by_class": {
+      "no damage": 125,
+      "minor damage": 91,
+      "major damage": 50,
+      "destroyed": 65
+    },
+    "evaluation_by_event": {
+      "Hurricane Ida": 103,
+      "Hurricane Ian": 228
+    }
+  },
+  "seeds": [
+    17,
+    29,
+    43,
+    59,
+    71
+  ],
+  "runs": 15,
+  "failed_runs": 0,
+  "leakage_audit": {
+    "status": "pass",
+    "train_count": 207,
+    "evaluation_count": 331,
+    "train_orthomosaics": [
+      "1001-San-Carlos-Island.geo.tif",
+      "20210901-Cocodrie-1.geo.tif"
+    ],
+    "evaluation_orthomosaics": [
+      "1002-Ft-Myers-Beach-TFD.geo.tif",
+      "20210902-LA-DIV-01.geo.tif"
+    ],
+    "overlap_counts": {
+      "sample_id": 0,
+      "building_id": 0,
+      "orthomosaic_group": 0,
+      "flight_group": 0,
+      "sequence_group": 0,
+      "exact_duplicate_group": 0,
+      "perceptual_duplicate_group": 0
+    },
+    "overlap_values": {
+      "sample_id": [],
+      "building_id": [],
+      "orthomosaic_group": [],
+      "flight_group": [],
+      "sequence_group": [],
+      "exact_duplicate_group": [],
+      "perceptual_duplicate_group": []
+    },
+    "exact_duplicate_pair_count": 0,
+    "perceptual_candidate_pair_count": 0,
+    "cross_split_duplicate_candidate_count": 0,
+    "phash_threshold": 6,
+    "native_flight_sequence_ids_available": false,
+    "flight_sequence_surrogate": "orthomosaic",
+    "internal_test_rows_read": 0,
+    "internal_test_annotation_objects_read": 0,
+    "internal_test_pixel_reads": 0,
+    "final_event_reads": 0
+  },
+  "artifact_validation": {
+    "status": "pass",
+    "checks": {
+      "complete_15_run_grid": true,
+      "unique_run_ids": true,
+      "same_initialization_within_each_paired_seed": true,
+      "prediction_count_matches_fixed_evaluation": true,
+      "fixed_epoch_count": true,
+      "sixteen_confusion_cells_per_run": true,
+      "two_event_metric_rows_per_run": true,
+      "thirty_two_event_confusion_cells_per_run": true,
+      "manifest_has_zero_test_rows": true,
+      "manifest_uses_exactly_four_approved_orthomosaics": true
+    },
+    "counts": {
+      "runs": 15,
+      "predictions": 4965,
+      "training_curve_rows": 375,
+      "confusion_matrix_rows": 240,
+      "event_metric_rows": 30,
+      "event_confusion_matrix_rows": 480,
+      "manifest_rows": 538
+    },
+    "missing_run_keys": [],
+    "unexpected_run_keys": []
+  },
+  "test_access": {
+    "internal_test_manifest_rows_read": 0,
+    "internal_test_annotation_objects_read": 0,
+    "internal_test_pixel_reads": 0,
+    "final_event_reads": 0
+  },
+  "visual_sample_ids": [
+    "c5607ac4b40084e460be59408ce15b00",
+    "8553e286893551876184acd5135f1ca3",
+    "af6c9e062ba96dee77e69f197c786949",
+    "7cd024930c1e92aab442bf7c904c16b3"
+  ],
+  "execution": {
+    "duration_seconds": 238.65362708299998,
+    "device": "cpu",
+    "torch_threads": 4
+  },
+  "limitations": [
+    "The fixed training subset contains 20 destroyed buildings.",
+    "Only four development orthomosaics from two hurricane events are used.",
+    "Evaluation is orthomosaic-held-out, not disaster-event-held-out.",
+    "The reference CNN is trained from scratch with a 96x96 input.",
+    "Native flight/sequence IDs are unavailable; orthomosaic is the surrogate group.",
+    "The result compares only 0%, masked building, and +12.5%; it is not a continuous optimum."
+  ]
+}

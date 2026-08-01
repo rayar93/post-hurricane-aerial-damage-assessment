@@ -25,6 +25,11 @@ outputs/
 *.bmp
 *.webp
 
+# Small, reviewed scientific evidence figures (never raw imagery or crops)
+!docs/assets/uav-preprocessing/UAV-P04_tiebreak_classifier-results.png
+!docs/assets/uav-preprocessing/UAV-P04_tiebreak_visual-comparison.png
+!docs/assets/uav-preprocessing/UAV-P04_tiebreak_confusion-matrices.png
+
 # OS files
 .DS_Store
 
