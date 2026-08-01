@@ -1,0 +1,41 @@
+{
+  "status": "pass",
+  "train_count": 207,
+  "evaluation_count": 331,
+  "train_orthomosaics": [
+    "1001-San-Carlos-Island.geo.tif",
+    "20210901-Cocodrie-1.geo.tif"
+  ],
+  "evaluation_orthomosaics": [
+    "1002-Ft-Myers-Beach-TFD.geo.tif",
+    "20210902-LA-DIV-01.geo.tif"
+  ],
+  "overlap_counts": {
+    "sample_id": 0,
+    "building_id": 0,
+    "orthomosaic_group": 0,
+    "flight_group": 0,
+    "sequence_group": 0,
+    "exact_duplicate_group": 0,
+    "perceptual_duplicate_group": 0
+  },
+  "overlap_values": {
+    "sample_id": [],
+    "building_id": [],
+    "orthomosaic_group": [],
+    "flight_group": [],
+    "sequence_group": [],
+    "exact_duplicate_group": [],
+    "perceptual_duplicate_group": []
+  },
+  "exact_duplicate_pair_count": 0,
+  "perceptual_candidate_pair_count": 0,
+  "cross_split_duplicate_candidate_count": 0,
+  "phash_threshold": 6,
+  "native_flight_sequence_ids_available": false,
+  "flight_sequence_surrogate": "orthomosaic",
+  "internal_test_rows_read": 0,
+  "internal_test_annotation_objects_read": 0,
+  "internal_test_pixel_reads": 0,
+  "final_event_reads": 0
+}

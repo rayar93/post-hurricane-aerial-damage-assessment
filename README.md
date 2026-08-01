@@ -8,6 +8,7 @@ The project is designed around three requirements: evidence-based preprocessing,
 
 - [UAV preprocessing experiment registry](UAV_PREPROCESSING_EXPERIMENTS.md): candidate preprocessing steps, literature rationale, experiment results, visual evidence, and final keep/reject decisions.
 - [UAV missing-data validation](docs/preprocessing/uav_missing_data_validation.md): alpha validity findings and final UAV-P01 decision.
+- [UAV-P04 final ROI-margin selection](docs/preprocessing/uav_p04_professor_summary.md): a focused 15-run confirmation on four leakage-separated development orthomosaics found no reliable benefit from masking or +12.5% context; the current 0% bounding box is `KEEP`.
 
 ## Completion target — August 30, 2026
 
@@ -121,6 +122,3 @@ The August milestone is complete only when all of the following are true:
 Large videos, raw datasets, extracted frames, generated datasets, model checkpoints, and other heavy artifacts should not be committed to GitHub.
 
 Only source code, configuration files, documentation, manifests without restricted data, and small result reports should be version-controlled.
-
-
-

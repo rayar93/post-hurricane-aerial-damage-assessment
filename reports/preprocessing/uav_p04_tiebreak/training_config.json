@@ -1,0 +1,139 @@
+{
+  "experiment_id": "UAV-P04-CLASSIFIER-TIEBREAK",
+  "created_date": "2026-07-31",
+  "source_repository": "CRASAR/CRASAR-U-DROIDs",
+  "source_revision": "c3f5421e1167bb7e88a765e3afa38bebd9898479",
+  "config": {
+    "input_size": 96,
+    "epochs": 25,
+    "batch_size": 16,
+    "learning_rate": 0.001,
+    "weight_decay": 0.0001,
+    "dropout": 0.2,
+    "initial_seeds": [
+      17,
+      29,
+      43,
+      59,
+      71
+    ],
+    "final_seeds": [
+      17,
+      29,
+      43,
+      59,
+      71
+    ],
+    "normalization": "uint8 / 127.5 - 1.0",
+    "augmentation": "none",
+    "loss": "cross_entropy",
+    "class_weighting": "n / (4 * class_count), computed from fixed TRAIN-30%",
+    "optimizer": "AdamW",
+    "scheduler": "none",
+    "checkpoint_policy": "final epoch; no early stopping",
+    "phash_threshold": 6,
+    "relevant_recall_drop": 0.05,
+    "torch_version": "2.2.2",
+    "device": "cpu"
+  },
+  "architecture": {
+    "name": "SmallDamageCNN",
+    "reference": "identical to UAV-P04-CLASSIFIER-LOOO",
+    "initialization": "PyTorch seeded default initialization, paired by seed",
+    "pretrained_weights": false,
+    "all_weights_trainable": true,
+    "input_size": 96
+  },
+  "comparison": {
+    "variants": [
+      {
+        "variant_id": "masked_building",
+        "display_name": "Masked building",
+        "margin_fraction": null,
+        "masked": true
+      },
+      {
+        "variant_id": "margin_0",
+        "display_name": "0%",
+        "margin_fraction": 0.0,
+        "masked": false
+      },
+      {
+        "variant_id": "margin_12p5",
+        "display_name": "+12.5%",
+        "margin_fraction": 0.125,
+        "masked": false
+      }
+    ],
+    "training_subset": "fixed historical TRAIN-30% from the two original orthomosaics",
+    "evaluation_subset": "fixed deterministic class-stratified 30% from each of the two new official-Train orthomosaics after UAV-P01 alpha rejection",
+    "evaluation_selection_salt": "uav-p04-tiebreak-evaluation-v1",
+    "evaluation_fraction": 0.3,
+    "primary_metric": "equal_event_macro_f1",
+    "event_weighting": "Ian and Ida receive equal weight"
+  },
+  "roi_rendering": {
+    "margin_definition": "add margin_fraction * bbox width to left/right and margin_fraction * bbox height to top/bottom",
+    "resize": "bilinear RGB; nearest alpha",
+    "aspect_ratio": "preserved",
+    "square_padding": "symmetric black",
+    "invalid_pixels": "alpha == 0 RGB black-filled",
+    "masked_control": "0% box with pixels outside polygon black",
+    "global_autocontrast": false,
+    "median_filter": false
+  },
+  "counts": {
+    "train_total": 207,
+    "train_by_class": {
+      "no damage": 77,
+      "minor damage": 72,
+      "major damage": 38,
+      "destroyed": 20
+    },
+    "evaluation_eligible_before_alpha": 1103,
+    "evaluation_rejected_by_alpha": 0,
+    "evaluation_total": 331,
+    "evaluation_by_class": {
+      "no damage": 125,
+      "minor damage": 91,
+      "major damage": 50,
+      "destroyed": 65
+    },
+    "evaluation_by_event": {
+      "Hurricane Ida": 103,
+      "Hurricane Ian": 228
+    }
+  },
+  "source_files": {
+    "1001-San-Carlos-Island.geo.tif": {
+      "imagery": "/Users/miguelmurena/Desktop/post-hurricane-aerial-damage-assessment/data/raw/crasar_uas_preprocessing_dev_v1/train/imagery/UAS/1001-San-Carlos-Island.geo.tif",
+      "annotation": "/Users/miguelmurena/Desktop/post-hurricane-aerial-damage-assessment/data/raw/crasar_uas_preprocessing_dev_v1/train/annotations/UAS/building_damage_assessment/1001-San-Carlos-Island.geo.tif.json",
+      "file_size_bytes": 1778565976
+    },
+    "20210901-Cocodrie-1.geo.tif": {
+      "imagery": "/Users/miguelmurena/Desktop/post-hurricane-aerial-damage-assessment/data/raw/crasar_uas_preprocessing_dev_v1/train/imagery/UAS/20210901-Cocodrie-1.geo.tif",
+      "annotation": "/Users/miguelmurena/Desktop/post-hurricane-aerial-damage-assessment/data/raw/crasar_uas_preprocessing_dev_v1/train/annotations/UAS/building_damage_assessment/20210901-Cocodrie-1.geo.tif.json",
+      "file_size_bytes": 1237849920
+    },
+    "1002-Ft-Myers-Beach-TFD.geo.tif": {
+      "imagery": "/Users/miguelmurena/Desktop/post-hurricane-aerial-damage-assessment/data/raw/crasar_uas_preprocessing_dev_v1/train/imagery/UAS/1002-Ft-Myers-Beach-TFD.geo.tif",
+      "annotation": "/Users/miguelmurena/Desktop/post-hurricane-aerial-damage-assessment/data/raw/crasar_uas_preprocessing_dev_v1/train/annotations/UAS/building_damage_assessment/1002-Ft-Myers-Beach-TFD.geo.tif.json",
+      "file_size_bytes": 3536113635,
+      "verified_sha256": "b741c319b874e498b1989d5ee9c93d919e15becae9dab86b64e60656133170bb",
+      "annotation_verified_sha256": "ba279479ef19c2bee7aecd9c71cfa52b9fbc4a62c311d424677eceb64e36b00c"
+    },
+    "20210902-LA-DIV-01.geo.tif": {
+      "imagery": "/Users/miguelmurena/Desktop/post-hurricane-aerial-damage-assessment/data/raw/crasar_uas_preprocessing_dev_v1/train/imagery/UAS/20210902-LA-DIV-01.geo.tif",
+      "annotation": "/Users/miguelmurena/Desktop/post-hurricane-aerial-damage-assessment/data/raw/crasar_uas_preprocessing_dev_v1/train/annotations/UAS/building_damage_assessment/20210902-LA-DIV-01.geo.tif.json",
+      "file_size_bytes": 3640165000,
+      "verified_sha256": "35f6c7a41dacb99b5e0e796d153f4c7a2443f22f14468f5328b2aa0debf8c938",
+      "annotation_verified_sha256": "e7d5742d73a6b3889e6e4cc84ba85e20b172698aa2a516b035c50e4a7a72cbc9"
+    }
+  },
+  "test_access": {
+    "internal_test_manifest_rows_read": 0,
+    "internal_test_annotation_objects_read": 0,
+    "internal_test_pixel_reads": 0,
+    "final_event_reads": 0
+  }
+}
